@@ -48,7 +48,7 @@ import { SharedModule } from './shared/shared.module';
     TypeOrmModule.forRootAsync({
       imports: [SharedModule],
       useFactory: (configService: ApiConfigService) =>
-        configService.postgresConfig,
+        configService.mysqlConfig,
       inject: [ApiConfigService],
       dataSourceFactory: (options) => {
         if (!options) {
@@ -61,17 +61,17 @@ import { SharedModule } from './shared/shared.module';
       },
     }),
     I18nModule.forRootAsync({
+      resolvers: [
+        { use: QueryResolver, options: ['lang'] },
+        AcceptLanguageResolver,
+        new HeaderResolver(['x-lang']),
+      ],
       useFactory: (configService: ApiConfigService) => ({
         fallbackLanguage: configService.fallbackLanguage,
         loaderOptions: {
           path: path.join(__dirname, '/i18n/'),
           watch: configService.isDevelopment,
         },
-        resolvers: [
-          { use: QueryResolver, options: ['lang'] },
-          AcceptLanguageResolver,
-          new HeaderResolver(['x-lang']),
-        ],
       }),
       imports: [SharedModule],
       inject: [ApiConfigService],

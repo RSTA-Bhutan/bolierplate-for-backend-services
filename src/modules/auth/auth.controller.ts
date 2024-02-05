@@ -40,6 +40,8 @@ export class AuthController {
   ): Promise<LoginPayloadDto> {
     const userEntity = await this.authService.validateUser(userLoginDto);
 
+    console.info('Hello');
+
     const token = await this.authService.createAccessToken({
       userId: userEntity.id,
       role: userEntity.role,
